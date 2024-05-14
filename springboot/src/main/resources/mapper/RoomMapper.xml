@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.RoomMapper">
+
+    <sql id="Base_Column_List">
+        id,name,status,type_id,hotel_id
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Room">
+        select room.*, type.name as typeName, hotel.name as hotelName
+        from room
+        left join type on room.type_id = type.id
+        left join hotel on room.hotel_id = hotel.id
+        <where>
+            <if test="id != null"> and id= #{id}</if>
+            <if test="name != null"> and room.name like concat('%', #{name}, '%')</if>
+            <if test="status != null"> and status= #{status}</if>
+            <if test="typeId != null"> and type_id= #{typeId}</if>
+            <if test="hotelId != null"> and room.hotel_id= #{hotelId}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Room">
+        select
+        <include refid="Base_Column_List" />
+        from room
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from room
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Room" useGeneratedKeys="true">
+        insert into room
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">name,</if>
+            <if test="status != null">status,</if>
+            <if test="typeId != null">type_id,</if>
+            <if test="hotelId != null">hotel_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="status != null">#{status},</if>
+            <if test="typeId != null">#{typeId},</if>
+            <if test="hotelId != null">#{hotelId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Admin">
+        update room
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="typeId != null">
+                type_id = #{typeId},
+            </if>
+            <if test="hotelId != null">
+                hotel_id = #{hotelId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

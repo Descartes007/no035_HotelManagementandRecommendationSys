@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CommentMapper">
+
+    <sql id="Base_Column_List">
+        id,content,time,type_id,hotel_id,user_id,parent_id,role
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Comment">
+        select comment.*, type.name as typeName, hotel.name as hotelName, user.name as userName
+        from comment
+        left join type on comment.type_id = type.id
+        left join hotel on comment.hotel_id = hotel.id
+        left join user on comment.user_id = user.id
+        <where>
+            <if test="id != null"> and id= #{id}</if>
+            <if test="content != null"> and comment.content like concat('%', #{content}, '%')</if>
+            <if test="time != null"> and time= #{time}</if>
+            <if test="typeId != null"> and type_id= #{typeId}</if>
+            <if test="hotelId != null"> and comment.hotel_id= #{hotelId}</if>
+            <if test="userId != null"> and user_id= #{userId}</if>
+            <if test="parentId != null"> and parent_id= #{parentId}</if>
+            <if test="role != null"> and role= #{role}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Comment">
+        select
+        <include refid="Base_Column_List" />
+        from comment
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from comment
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Comment" useGeneratedKeys="true">
+        insert into comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="content != null">content,</if>
+            <if test="time != null">time,</if>
+            <if test="typeId != null">type_id,</if>
+            <if test="hotelId != null">hotel_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="role != null">role,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="content != null">#{content},</if>
+            <if test="time != null">#{time},</if>
+            <if test="typeId != null">#{typeId},</if>
+            <if test="hotelId != null">#{hotelId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="role != null">#{role},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Admin">
+        update comment
+        <set>
+            <if test="content != null">
+                content = #{content},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="typeId != null">
+                type_id = #{typeId},
+            </if>
+            <if test="hotelId != null">
+                hotel_id = #{hotelId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId},
+            </if>
+            <if test="role != null">
+                role = #{role},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CheckinMapper">
+
+    <sql id="Base_Column_List">
+        id,order_id,type_id,hotel_id,user_id,in_time,out_time,room_id
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Checkin">
+        select checkin.*, type.name as typeName, hotel.name as hotelName, user.name as userName, room.name as roomName
+        from checkin
+        left join type on checkin.type_id = type.id
+        left join hotel on checkin.hotel_id = hotel.id
+        left join user on checkin.user_id = user.id
+        left join room on checkin.room_id = room.id
+        <where>
+            <if test="id != null"> and id= #{id}</if>
+            <if test="orderId != null"> and checkin.order_id like concat('%', #{orderId}, '%')</if>
+            <if test="typeId != null"> and type_id= #{typeId}</if>
+            <if test="hotelId != null"> and checkin.hotel_id= #{hotelId}</if>
+            <if test="userId != null"> and user_id= #{userId}</if>
+            <if test="inTime != null"> and in_time= #{inTime}</if>
+            <if test="outTime != null"> and out_time= #{outTime}</if>
+            <if test="roomId != null"> and room_id= #{roomId}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Checkin">
+        select
+        <include refid="Base_Column_List" />
+        from checkin
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from checkin
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Checkin" useGeneratedKeys="true">
+        insert into checkin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="typeId != null">type_id,</if>
+            <if test="hotelId != null">hotel_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="inTime != null">in_time,</if>
+            <if test="outTime != null">out_time,</if>
+            <if test="roomId != null">room_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="typeId != null">#{typeId},</if>
+            <if test="hotelId != null">#{hotelId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="inTime != null">#{inTime},</if>
+            <if test="outTime != null">#{outTime},</if>
+            <if test="roomId != null">#{roomId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Admin">
+        update checkin
+        <set>
+            <if test="orderId != null">
+                order_id = #{orderId},
+            </if>
+            <if test="typeId != null">
+                type_id = #{typeId},
+            </if>
+            <if test="hotelId != null">
+                hotel_id = #{hotelId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="inTime != null">
+                in_time = #{inTime},
+            </if>
+            <if test="outTime != null">
+                out_time = #{outTime},
+            </if>
+            <if test="roomId != null">
+                room_id = #{roomId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

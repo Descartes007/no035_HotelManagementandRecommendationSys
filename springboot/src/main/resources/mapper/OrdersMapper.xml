@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.OrdersMapper">
+
+    <sql id="Base_Column_List">
+        id,order_id,status,type_id,hotel_id,user_id,time,in_time,out_time,days,price
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Orders">
+        select orders.*, type.name as typeName, type.img as typeImg, hotel.name as hotelName, user.name as userName
+        from orders
+        left join type on orders.type_id = type.id
+        left join hotel on orders.hotel_id = hotel.id
+        left join user on orders.user_id = user.id
+        <where>
+            <if test="id != null"> and id= #{id}</if>
+            <if test="orderId != null"> and orders.order_id like concat('%', #{orderId}, '%')</if>
+            <if test="status != null"> and orders.status= #{status}</if>
+            <if test="typeId != null"> and orders.type_id= #{typeId}</if>
+            <if test="hotelId != null"> and orders.hotel_id= #{hotelId}</if>
+            <if test="userId != null"> and orders.user_id= #{userId}</if>
+            <if test="time != null"> and orders.time= #{time}</if>
+            <if test="inTime != null"> and orders.in_time= #{inTime}</if>
+            <if test="outTime != null"> and orders.out_time= #{outTime}</if>
+            <if test="days != null"> and orders.days= #{days}</if>
+            <if test="price != null"> and orders.price= #{price}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Orders">
+        select
+        <include refid="Base_Column_List" />
+        from orders
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from orders
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Orders" useGeneratedKeys="true">
+        insert into orders
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="status != null">status,</if>
+            <if test="typeId != null">type_id,</if>
+            <if test="hotelId != null">hotel_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="time != null">time,</if>
+            <if test="inTime != null">in_time,</if>
+            <if test="outTime != null">out_time,</if>
+            <if test="days != null">days,</if>
+            <if test="price != null">price,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="typeId != null">#{typeId},</if>
+            <if test="hotelId != null">#{hotelId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="time != null">#{time},</if>
+            <if test="inTime != null">#{inTime},</if>
+            <if test="outTime != null">#{outTime},</if>
+            <if test="days != null">#{days},</if>
+            <if test="price != null">#{price},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Admin">
+        update orders
+        <set>
+            <if test="orderId != null">
+                order_id = #{orderId},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="typeId != null">
+                type_id = #{typeId},
+            </if>
+            <if test="hotelId != null">
+                hotel_id = #{hotelId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="inTime != null">
+                in_time = #{inTime},
+            </if>
+            <if test="outTime != null">
+                out_time = #{outTime},
+            </if>
+            <if test="days != null">
+                days = #{days},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>
